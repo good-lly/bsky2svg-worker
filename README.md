@@ -2,7 +2,9 @@
 
 #### Super simple Cloudflare Worker to generate SVG images from your posts on Bluesky and publish on your Github profile like this:
 
-![my-bskyprofile-on-github](https://bsky2svg-worker.jensenwtfwtf.workers.dev/render.svg?sanitize=true)
+<a href="https://bsky.app/profile/peter-in-the.bsky.social" target="_blank" rel="noopener noreferrer">
+  <img src="https://bsky2svg-worker.jensenwtfwtf.workers.dev/render.svg?sanitize=true" alt="example image of bsky to svg" width="100%"/>
+</a>
 
 ## How to use the bsky2svg worker
 

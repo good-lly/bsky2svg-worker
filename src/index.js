@@ -141,8 +141,13 @@ app.get('/render.svg', async c => {
   });
 });
 
-function escapeHTML(s = '') {
-  return s.replace(/[&<>]/g, m => ({ '&': '&', '<': '<', '>': '>' })[m]);
+function escapeHTML(str = '') {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 export default app;
