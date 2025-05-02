@@ -66,7 +66,6 @@ Contributions are welcome! If you have any suggestions or improvements, please o
 
 ## 💙 Sponsor these shenanigans
 
-Got a chuckle, a bug fix, or a spark of inspiration from this repo?
 Help keep the nonsense rolling by becoming a sponsor otherwise Cloudflare will ruin my bills!
 
 [![Become a Sponsor](https://img.shields.io/badge/💸_GitHub-Sponsor-ff69b4?logo=github&logoColor=white)](https://github.com/sponsors/good-lly)
