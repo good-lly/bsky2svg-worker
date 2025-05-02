@@ -1,0 +1,29 @@
+{
+  "name": "bsky2svg-worker",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev ",
+    "node-dev": "node ./src/index.js",
+    "start": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.14.1"
+  },
+  "dependencies": {
+    "hono": "^4.7.8"
+  },
+  "prettier": {
+    "bracketSpacing": true,
+    "bracketSameLine": false,
+    "singleQuote": true,
+    "semi": true,
+    "endOfLine": "lf",
+    "tabWidth": 2,
+    "trailingComma": "all",
+    "arrowParens": "avoid",
+    "printWidth": 120
+  }
+}
