@@ -14,6 +14,9 @@ async function toDataURL(url) {
   const b64 = btoa(bin); // global in Workers
   return `data:${ct};base64,${b64}`;
 }
+function toBase64(buf) {
+  return btoa(String.fromCharCode(...new Uint8Array(buf)));
+}
 
 function wrapLines(str, max = 40) {
   // naïve word-wrap
@@ -39,13 +42,14 @@ app.get('/health', c => c.text('OK'));
 // ---------- main route -----------------------------------------------------
 app.get('/render.svg', async c => {
   const actor = USERNAME; // hard-wired for demo
-  const [profileRes, feedRes] = await Promise.all([
-    fetch(`${BSKY_API}/xrpc/app.bsky.actor.getProfile?actor=${encodeURIComponent(actor)}`),
-    fetch(`${BSKY_API}/xrpc/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(actor)}&limit=5`),
+  const [profile, feed] = await Promise.all([
+    fetch(`${BSKY_API}/xrpc/app.bsky.actor.getProfile?actor=${encodeURIComponent(actor)}`).then(r => r.json()), // ← returns a promise for the parsed JSON
+    fetch(`${BSKY_API}/xrpc/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(actor)}&limit=6`).then(r =>
+      r.json(),
+    ),
   ]);
 
-  const profile = await profileRes.json();
-  const feed = await feedRes.json();
+  // after we have profile, we can now launch the two image fetches in parallel
   const [banner, avatar] = await Promise.all([toDataURL(profile.banner), toDataURL(profile.avatar)]);
   const posts = feed.feed.map(i => ({
     text: i.post.record.text || '',
@@ -64,10 +68,11 @@ app.get('/render.svg', async c => {
   // ---------- build dynamic markup ----------------------------------------
   let y = BANNER_H + AVATAR + GAP; // first post top Y
   let markup = '';
-
+  let iter = 0;
   for (const p of posts) {
     const startY = y;
-    const lines = wrapLines(p.text, 40); // split into rows
+    const lines = wrapLines(p.text, 80); // split into rows
+    markup += `<g class="post-block" style="animation-delay:${iter * 0.25}s">`;
     lines.forEach((ln, idx) => {
       markup += `<text class="post" x="${GAP}" y="${startY + LINE_H * (idx + 1) - 4}">${escapeHTML(ln)}</text>`;
     });
@@ -79,6 +84,8 @@ app.get('/render.svg', async c => {
              width="96" height="${IMG_H - 6}" preserveAspectRatio="xMidYMid slice"/>`;
       blockH += IMG_H;
     }
+    markup += `</g>`; // Closing the <g> tag
+    iter++;
     y += blockH + POST_GAP;
   }
 
@@ -95,6 +102,9 @@ app.get('/render.svg', async c => {
 .post  {font:14px/1.35 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
 .footer{font:12px/1.3  -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif} 
 .uname, .handle, .post, .footer { fill:#111 }
+@keyframes fadeInUp{0%{opacity:0;transform:translateY(12px)}
+  100%{opacity:1;transform:translateY(0)}}
+  .post-block{opacity:0;animation:fadeInUp .6s ease-out forwards}
 @media (prefers-color-scheme: dark) {
         .uname, .handle, .post, .footer { fill:#eee }
         .footer { fill:#aaa }
