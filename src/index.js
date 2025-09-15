@@ -34,7 +34,7 @@ function wrapLines(str, max = 40) {
 }
 
 const BSKY_API = 'https://public.api.bsky.app';
-const USERNAME = 'peter-in-the.bsky.social';
+const USERNAME = 'jolly-good.bsky.social';
 const repoUrl = 'https://github.com/good-lly/bsky2svg-worker';
 
 app.get('/health', c => c.text('OK'));
